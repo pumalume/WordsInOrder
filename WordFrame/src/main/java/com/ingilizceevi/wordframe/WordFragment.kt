@@ -96,6 +96,9 @@ class WordFragment : Fragment() {
 
     fun checktoseeiftherearetworowsofY(numberOfWords:Int) {
         val arrayOfYPosition = mutableListOf<Float>()
+//        var temp = arrayOfYPosition
+//        temp = temp.sort()
+//        (arrayOfYPosition == temp)
         for(i in 0 until numberOfWords){
             val a = fieldOfPlay.getChildAt(i)
             arrayOfYPosition.add(a.y)
@@ -109,12 +112,21 @@ class WordFragment : Fragment() {
         }
     }
 
-    fun countHowManyAreWithinModerateDistanceFromPoint(max:Float, number_of_views: Int):Int{
+    fun checkwherethelinestarts(position:Int, number_of_views: Int){
+//        for(i in 0 until number_of_views){
+//            if(wordIsInRangeOfPosition(i))
+//        }
+    }
+    fun wordIsInRangeOfPosition(index:Int, position:Float, range:Float):Boolean{
+        val y_value = fieldOfPlay.getChildAt(index).y
+        val differenceInPositionFromPoint = abs(position - y_value)
+        if(differenceInPositionFromPoint < range)return true
+        return false
+    }
+    fun countHowManyAreWithinModerateDistanceFromPoint(position:Float, number_of_views: Int):Int{
         var count = 0
         for(i in 0 until number_of_views) {
-            val y_value = fieldOfPlay.getChildAt(i).y
-            val differenceInPositionFromPoint = abs(max - y_value)
-            if(differenceInPositionFromPoint < 20)count++
+            if(wordIsInRangeOfPosition(i, position, 15f))count++
         }
         return count
     }
