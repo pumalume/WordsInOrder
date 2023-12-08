@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/play_button"
+        android:layout_width="82dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/play_button" />
+
+    <FrameLayout
+        android:id="@+id/fieldOfPlay"
+        android:layout_width="0dp"
+        android:layout_height="602dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/garbageButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/play_button"></FrameLayout>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/wordDoorButton"-->
+<!--        android:layout_width="62dp"-->
+<!--        android:layout_height="76dp"-->
+<!--        android:layout_marginBottom="5dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:srcCompat="@drawable/door" />-->
+
+    <ImageView
+        android:id="@+id/submit_button"
+        android:layout_width="72dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/green_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

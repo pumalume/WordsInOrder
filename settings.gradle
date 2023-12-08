@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "WordsInOrder"
+include ':app'
+include ':ImageModule'
+include ':ChapterChoice'
+include ':DataConnection'
+include ':ImageConcept'
+include ':WordFrame'
+include ':mylibrary'
