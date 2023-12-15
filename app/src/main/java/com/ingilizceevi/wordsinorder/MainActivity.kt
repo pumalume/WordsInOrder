@@ -25,12 +25,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        implementDataControl()
- //       implementsChapterSelection()
-//        val game_intent = Intent(this, WordOrderGame::class.java)
-//        game_intent.putExtra("chapter", "chapter13")
-//        game_intent.putExtra("name", "Spencer")
-//        startActivityForResult(game_intent, 2)
+//        implementDataControl()
+//        implementsChapterSelection()
+        val game_intent = Intent(this, WordOrderGame::class.java)
+        game_intent.putExtra("chapter", "chapter04")
+        game_intent.putExtra("name", "Spencer")
+        startActivityForResult(game_intent, 2)
     }
 
     fun implementDataControl(){

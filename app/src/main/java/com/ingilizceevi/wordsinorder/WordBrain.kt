@@ -25,6 +25,29 @@ class WordBrain(): ViewModel() {
         sentences.forEach { entry -> sentenceList.add(entry.key) }
         sounds = fileLoader.theSounds
     }
+    fun getLocationOfRepeatedWords(word:String):IntArray {
+        val index_of_word = mutableListOf<Int>()
+        for (i in 0 until sentenceList.size) {
+            if (word == sentenceList[i]) index_of_word.add(i)
+        }
+        return index_of_word.toIntArray()
+    }
+
+    fun createPossibleSentenceOrders():MutableList<IntArray>{
+        val possible_word_index : MutableList<IntArray> = ArrayList(sentenceList.size)
+        for(i in 0 until sentenceList.size) {
+            possible_word_index[i]= getLocationOfRepeatedWords(sentenceList[i])
+        }
+        return possible_word_index
+
+
+    }
+    fun checkDoubleWordsInList(token:String):Boolean{
+        val doubles = sentenceList.groupingBy { it }.eachCount().filter { it.value >1 }
+        if(doubles.containsKey(token)) return true
+        else return false
+
+    }
 
     fun isDecoySentence():ArrayList<String>?{return null}
     fun returnCurrentUri(): Uri? {

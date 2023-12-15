@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import androidx.fragment.app.FragmentContainerView
 import com.ingilizceevi.wordframe.WordFragment
 
@@ -168,7 +169,8 @@ class WordOrderGame : AppCompatActivity() {
 
     fun checkSentenceOrder():Boolean{
         val wordFragment = supportFragmentManager.findFragmentById(R.id.word_panel) as WordFragment
-        return wordFragment.sentenceOrderIsGood(wordBrain.sentence_size)
+        val possible_word_order = wordBrain.createPossibleSentenceOrders()
+        return wordFragment.sentenceOrderIsGood(wordBrain.sentence_size, possible_word_order )
     }
 
 

@@ -2,7 +2,6 @@ package com.ingilizceevi.wordframe
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -66,58 +65,74 @@ class WordFragment : Fragment() {
         return playSoundButton
     }
 
-    fun isIndexLessThanAllTheRest(index:Int, number_of_views: Int):Boolean{
-        val a = fieldOfPlay.getChildAt(index).x
 
-        for(i in 0 until number_of_views){
-            val varX = fieldOfPlay.getChildAt(i).x
-            val indexX = fieldOfPlay.getChildAt(index).x
-            if(i>index) {
-                if(fieldOfPlay.getChildAt(index).x < fieldOfPlay.getChildAt(i).x)continue
-                else return false
+    fun checkIfAnotherWord(word:IntArray, next_word:Int):Boolean{
+        var i = 0
+        while(word[i]!=-1){
+            if(fieldOfPlay.getChildAt(word[i]).x < fieldOfPlay.getChildAt(next_word).x){
+                word.drop(i)
+                return true
+            }
+        }
+        return false
+
+    }
+
+    fun wordPositionIsLessThanNext(word:Int, next_word:Int, avatars:MutableList<IntArray>):Boolean{
+        avatars[word].forEach { avatar->
+            if(fieldOfPlay.getChildAt(avatar).x<fieldOfPlay.getChildAt(next_word).x)return true
+        }
+        return false
+
+    }
+    fun isWordSegementInOrder(start_word:Int, finish_word:Int, avatars:MutableList<IntArray>):Boolean{
+        for(this_word in start_word until finish_word){
+            (start_word..finish_word).forEach { next_word->
+                if(this_word < next_word){
+                    if(!wordPositionIsLessThanNext(this_word, next_word, avatars))return false
+                }
             }
         }
         return true
     }
 
-    //this checks the vertical alignment of
-    //a word with all the other words
-    fun isYAlignedWithAllTheRest(index:Int, number_of_views: Int):Boolean{
-        val y_value = fieldOfPlay.getChildAt(index).y
-        for(i in 0 until number_of_views){
-            if(i!=index) {
-                val anchor_y = fieldOfPlay.getChildAt(i).y
-                if(y_value < anchor_y-100 || y_value > anchor_y+100) return false
-            }
+    fun isHeightOfTheWords(numberOfWords: Int): FloatArray {
+        val position_of_y_values = FloatArray(numberOfWords)
+        for (i in 0 until numberOfWords) {
+            val wordBox = fieldOfPlay.getChildAt(i)
+            position_of_y_values[i] = wordBox.y
         }
-        return true
+        return position_of_y_values
     }
-    fun isContinuedToTheNextRow(){}
-
-    fun checktoseeiftherearetworowsofY(numberOfWords:Int) {
-        val arrayOfYPosition = mutableListOf<Float>()
-//        var temp = arrayOfYPosition
-//        temp = temp.sort()
-//        (arrayOfYPosition == temp)
-        for(i in 0 until numberOfWords){
-            val a = fieldOfPlay.getChildAt(i)
-            arrayOfYPosition.add(a.y)
-        }
-        val max_height = arrayOfYPosition.max()
-        val min_height = arrayOfYPosition.min()
-        val nearMax = countHowManyAreWithinModerateDistanceFromPoint(max_height, numberOfWords)
-        val nearMin = countHowManyAreWithinModerateDistanceFromPoint(min_height, numberOfWords)
-        if(nearMax+nearMin<numberOfWords){
-            Log.i("ALERT*@@@@@@@@@@", "max: ${nearMax} min: ${nearMin}")
-        }
+    fun isMinAndMaxPositionOfWords(numberOfWords:Int):Array<Float> {
+        val position_of_words = isHeightOfTheWords(numberOfWords)
+        val max_height_of_Y = position_of_words.max()
+        val min_height_of_Y = position_of_words.min()
+        return arrayOf(min_height_of_Y,max_height_of_Y)
+    }
+    fun isCountOfWordsNearMinAndMax(y_heights:Array<Float>, numberOfWords: Int):Array<Int>{
+        val near_min = countHowManyAreWithinModerateDistanceFromPoint(y_heights[0], numberOfWords)
+        val near_max = countHowManyAreWithinModerateDistanceFromPoint(y_heights[1], numberOfWords)
+        return arrayOf(near_min, near_max)
     }
 
-    fun checkwherethelinestarts(position:Int, number_of_views: Int){
-//        for(i in 0 until number_of_views){
-//            if(wordIsInRangeOfPosition(i))
-//        }
+    fun getWordsAtLevelOfY(y_value:Float, number_of_words: Int): IntArray {
+        val words_on_level = mutableListOf<Int>()
+        for(i in 0 until number_of_words) {
+            if(wordIsInRangeOfALevel(i, y_value, 40f )){ words_on_level.add(i) }
+        }
+        return words_on_level.toIntArray()
     }
-    fun wordIsInRangeOfPosition(index:Int, position:Float, range:Float):Boolean{
+    fun isTheNumberOfRows(number_of_words: Int):Int{
+        val min_max_position = isMinAndMaxPositionOfWords(number_of_words)
+        val count_on_min_max = isCountOfWordsNearMinAndMax(min_max_position,number_of_words)
+        val count_on_min = count_on_min_max[0]
+        val count_on_max = count_on_min_max[1]
+        if(count_on_min == count_on_max) { if((min_max_position[1]-min_max_position[0])<50)return 1 }
+        return 2
+    }
+
+    fun wordIsInRangeOfALevel(index:Int, position:Float, range:Float):Boolean{
         val y_value = fieldOfPlay.getChildAt(index).y
         val differenceInPositionFromPoint = abs(position - y_value)
         if(differenceInPositionFromPoint < range)return true
@@ -126,24 +141,30 @@ class WordFragment : Fragment() {
     fun countHowManyAreWithinModerateDistanceFromPoint(position:Float, number_of_views: Int):Int{
         var count = 0
         for(i in 0 until number_of_views) {
-            if(wordIsInRangeOfPosition(i, position, 15f))count++
+            if(wordIsInRangeOfALevel(i, position, 50f))count++
         }
         return count
     }
-    fun sentenceOrderIsGood(numberOfWords:Int):Boolean{
-        checktoseeiftherearetworowsofY(numberOfWords)
-        for(index in 0 until numberOfWords) {
-            if(!isIndexLessThanAllTheRest(index, numberOfWords)) {
-                return false
-            }
+
+    fun sentenceOrderIsGood(number_of_words:Int, avatars:MutableList<IntArray>):Boolean{
+        var sentences_are_in_order = false
+        val number_of_rows = isTheNumberOfRows(number_of_words)
+        if(number_of_rows==1){
+            if(isWordSegementInOrder(0,number_of_words-1, avatars)){ return true }
         }
-        for(index in 0 until numberOfWords){
-            if(!isYAlignedWithAllTheRest(index, numberOfWords)){
-                return false
-            }
+        else{
+            val min_height = isMinAndMaxPositionOfWords(number_of_words)[0]
+            val max_height = isMinAndMaxPositionOfWords(number_of_words)[1]
+            val min_words = getWordsAtLevelOfY(min_height,number_of_words)
+            val max_words = getWordsAtLevelOfY(max_height, number_of_words)
+            if(!isWordSegementInOrder(min_words[0], min_words.last(),avatars))return false
+            if(!isWordSegementInOrder(max_words[0], max_words.last(),avatars))return false
+            return true
         }
-        return true
+        return false
     }
+
+
     fun viewsAreFilledWithNewText(){
         freshTextIsAddedToViews()
         decoyTextIsAddedToViews()
