@@ -22,28 +22,29 @@ class WordBrain(): ViewModel() {
         fileLoader.loadTextFile(chapter)
         sentences = fileLoader.buildSentenceMap()
         sentencesEkler = fileLoader.buildSentenceEkler()
-        sentences.forEach { entry -> sentenceList.add(entry.key) }
+        sentences.forEach { entry -> sentenceList.add(entry.key)
+        }
         sounds = fileLoader.theSounds
     }
     fun getLocationOfRepeatedWords(word:String):IntArray {
         val index_of_word = mutableListOf<Int>()
-        for (i in 0 until sentenceList.size) {
-            if (word == sentenceList[i]) index_of_word.add(i)
+        for (i in 0 until currentSentenceList.size) {
+            if (word == currentSentenceList[i]) index_of_word.add(i)
         }
         return index_of_word.toIntArray()
     }
 
     fun createPossibleSentenceOrders():MutableList<IntArray>{
-        val possible_word_index : MutableList<IntArray> = ArrayList(sentenceList.size)
-        for(i in 0 until sentenceList.size) {
-            possible_word_index[i]= getLocationOfRepeatedWords(sentenceList[i])
+        val size = currentSentenceList.size
+        val possible_word_index : MutableList<IntArray> = ArrayList(size)
+        for(i in 0 until currentSentenceList.size) {
+            possible_word_index.add( getLocationOfRepeatedWords(currentSentenceList[i]))
         }
-        return possible_word_index
-
+          return possible_word_index
 
     }
     fun checkDoubleWordsInList(token:String):Boolean{
-        val doubles = sentenceList.groupingBy { it }.eachCount().filter { it.value >1 }
+        val doubles = currentSentenceList.groupingBy { it }.eachCount().filter { it.value >1 }
         if(doubles.containsKey(token)) return true
         else return false
 

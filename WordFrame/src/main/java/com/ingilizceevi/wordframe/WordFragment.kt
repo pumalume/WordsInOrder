@@ -78,20 +78,36 @@ class WordFragment : Fragment() {
 
     }
 
-    fun wordPositionIsLessThanNext(word:Int, next_word:Int, avatars:MutableList<IntArray>):Boolean{
-        avatars[word].forEach { avatar->
-            if(fieldOfPlay.getChildAt(avatar).x<fieldOfPlay.getChildAt(next_word).x)return true
-        }
+    fun wordPositionIsLessThanNext(word:Int, next_word:Int):Boolean{
+        if(fieldOfPlay.getChildAt(word).x<fieldOfPlay.getChildAt(next_word).x)return true
         return false
-
     }
-    fun isWordSegementInOrder(start_word:Int, finish_word:Int, avatars:MutableList<IntArray>):Boolean{
-        for(this_word in start_word until finish_word){
-            (start_word..finish_word).forEach { next_word->
-                if(this_word < next_word){
-                    if(!wordPositionIsLessThanNext(this_word, next_word, avatars))return false
-                }
+    fun wordPositionIsLessThanAllTheRest(word:Int, last_word:Int):Boolean{
+        val len = last_word - word
+        for(i in 1 until len){
+            if(!wordPositionIsLessThanNext(word, word+i))return false
+        }
+        return true
+    }
+
+    fun isLastValueForX(word:Int, sequence_size:Int):Boolean{
+        val x = fieldOfPlay.getChildAt(word).x
+        for(i in word until word+sequence_size ){
+            if(x<fieldOfPlay.getChildAt(i)){
+                return false
             }
+        }
+        return true
+    }
+
+    fun isWordSegementInOrder(start_word:Int, finish_word:Int, avatars:MutableList<IntArray>):Boolean{
+        (start_word..finish_word).toList().asReversed().forEach { word ->
+            isLastValueForX(word,finish_word-start_word)
+        }
+
+        fieldOfPlay.
+        for(word in start_word until finish_word){
+            if(!wordPositionIsLessThanAllTheRest(word, finish_word))return false
         }
         return true
     }
@@ -147,7 +163,7 @@ class WordFragment : Fragment() {
     }
 
     fun sentenceOrderIsGood(number_of_words:Int, avatars:MutableList<IntArray>):Boolean{
-        var sentences_are_in_order = false
+
         val number_of_rows = isTheNumberOfRows(number_of_words)
         if(number_of_rows==1){
             if(isWordSegementInOrder(0,number_of_words-1, avatars)){ return true }
@@ -157,8 +173,11 @@ class WordFragment : Fragment() {
             val max_height = isMinAndMaxPositionOfWords(number_of_words)[1]
             val min_words = getWordsAtLevelOfY(min_height,number_of_words)
             val max_words = getWordsAtLevelOfY(max_height, number_of_words)
-            if(!isWordSegementInOrder(min_words[0], min_words.last(),avatars))return false
-            if(!isWordSegementInOrder(max_words[0], max_words.last(),avatars))return false
+            if(min_words.size + max_words.size == number_of_words) {
+                val x = 3
+            }
+            if(!isWordSegementInOrder(0, min_words.size,avatars))return false
+            if(!isWordSegementInOrder(min_words.size, max_words.size, avatars))return false
             return true
         }
         return false
