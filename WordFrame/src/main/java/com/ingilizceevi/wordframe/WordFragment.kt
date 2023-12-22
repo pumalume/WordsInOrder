@@ -105,64 +105,14 @@ class WordFragment : Fragment() {
             isLastValueForX(word,finish_word-start_word)
         }
 
-        fieldOfPlay.
+        fieldOfPlay
         for(word in start_word until finish_word){
             if(!wordPositionIsLessThanAllTheRest(word, finish_word))return false
         }
         return true
     }
 
-    fun isHeightOfTheWords(numberOfWords: Int): FloatArray {
-        val position_of_y_values = FloatArray(numberOfWords)
-        for (i in 0 until numberOfWords) {
-            val wordBox = fieldOfPlay.getChildAt(i)
-            position_of_y_values[i] = wordBox.y
-        }
-        return position_of_y_values
-    }
-    fun isMinAndMaxPositionOfWords(numberOfWords:Int):Array<Float> {
-        val position_of_words = isHeightOfTheWords(numberOfWords)
-        val max_height_of_Y = position_of_words.max()
-        val min_height_of_Y = position_of_words.min()
-        return arrayOf(min_height_of_Y,max_height_of_Y)
-    }
-    fun isCountOfWordsNearMinAndMax(y_heights:Array<Float>, numberOfWords: Int):Array<Int>{
-        val near_min = countHowManyAreWithinModerateDistanceFromPoint(y_heights[0], numberOfWords)
-        val near_max = countHowManyAreWithinModerateDistanceFromPoint(y_heights[1], numberOfWords)
-        return arrayOf(near_min, near_max)
-    }
-
-    fun getWordsAtLevelOfY(y_value:Float, number_of_words: Int): IntArray {
-        val words_on_level = mutableListOf<Int>()
-        for(i in 0 until number_of_words) {
-            if(wordIsInRangeOfALevel(i, y_value, 40f )){ words_on_level.add(i) }
-        }
-        return words_on_level.toIntArray()
-    }
-    fun isTheNumberOfRows(number_of_words: Int):Int{
-        val min_max_position = isMinAndMaxPositionOfWords(number_of_words)
-        val count_on_min_max = isCountOfWordsNearMinAndMax(min_max_position,number_of_words)
-        val count_on_min = count_on_min_max[0]
-        val count_on_max = count_on_min_max[1]
-        if(count_on_min == count_on_max) { if((min_max_position[1]-min_max_position[0])<50)return 1 }
-        return 2
-    }
-
-    fun wordIsInRangeOfALevel(index:Int, position:Float, range:Float):Boolean{
-        val y_value = fieldOfPlay.getChildAt(index).y
-        val differenceInPositionFromPoint = abs(position - y_value)
-        if(differenceInPositionFromPoint < range)return true
-        return false
-    }
-    fun countHowManyAreWithinModerateDistanceFromPoint(position:Float, number_of_views: Int):Int{
-        var count = 0
-        for(i in 0 until number_of_views) {
-            if(wordIsInRangeOfALevel(i, position, 50f))count++
-        }
-        return count
-    }
-
-    fun sentenceOrderIsGood(number_of_words:Int, avatars:MutableList<IntArray>):Boolean{
+      fun sentenceOrderIsGood(number_of_words:Int, avatars:MutableList<IntArray>):Boolean{
 
         val number_of_rows = isTheNumberOfRows(number_of_words)
         if(number_of_rows==1){
